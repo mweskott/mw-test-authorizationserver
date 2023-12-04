@@ -1,0 +1,62 @@
+okta:
+  base-url: https://dev-t7n7711l.us.auth0.com
+
+spring:
+  security:
+    oauth2:
+
+      authorizationserver:
+        client:
+          public-client:
+            registration:
+              client-id: "public-client"
+              client-secret: "{noop}secret"
+              client-authentication-methods:
+                - "client_secret_post"
+              authorization-grant-types:
+                - "authorization_code"
+              redirect-uris:
+                - "http://localhost:4200"
+              scopes:
+                - "openid"
+                - "profile"
+                - "email"
+            require-authorization-consent: false
+            require-proof-key: false
+
+      client:
+        registration:
+          my-client:
+            provider: okta
+            client-id: FW8nNo0WzD047sPbO93LTVodcYQM1m2e
+            client-secret: EVNs7zP9rCVnwd8wIP3y0gR04-SuakL_iUnLR-MeT8NtZ56TxWNVYTr1ML-xSQqK
+            scope:
+              - openid
+              - profile
+              - email
+#          my-client-02:
+#            provider: okta2
+#            client-id: ${OKTA_CLIENT_ID}
+#            client-secret: ${OKTA_CLIENT_SECRET}
+#            scope:
+#              - openid
+#              - profile
+#              - email
+        provider:
+#          okta:
+#            authorization-uri: ${okta.base-url}/authorize
+#            token-uri: ${okta.base-url}//token
+#            user-info-uri: ${okta.base-url}//userinfo
+#            jwk-set-uri: ${okta.base-url}/keys
+#            user-name-attribute: sub
+          okta:
+            issuer-uri: ${okta.base-url}/
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: TRACE
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
+
