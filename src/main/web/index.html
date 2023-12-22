@@ -1,6 +1,9 @@
+<!doctype html>
 <html>
 <head>
-    <script src="auth0.min.js"></script>
+    <title>mw-test-authorizationserver</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap.min.css">
     <script src="axios.js"></script>
     <script>
         let code = null;
@@ -13,55 +16,11 @@
             console.log(`code: ${code}, state: ${state}`);
         };
 
-//        var tt = new auth0.Auth0Client({
-//            domain: 'http://localhost:8080/oauth2',
-//            clientID: 'public-client'
-//        });
-
-        var tt = new auth0.WebAuth({
-            domain: 'http://localhost:8080/oauth2',
-            clientID: 'public-client'
-        });
-
-        const redirect = () => {
+        const authorize = () => {
             window.location.href = "http://localhost:8080/oauth2/authorize?client_id=public-client&redirect_uri=http%3A%2F%2Flocalhost%3A4200&response_type=code&scope=email"
         }
 
-        const authorize = () => {
-            tt.authorize({
-                redirectUri: "http://localhost:4200",
-                responseType: "code",
-                scope: "articles.read"
-            }).then(result => {
-                console.log("authorize result", result);
-            })
-        }
-
-        const login1 = () => {
-            const data = new URLSearchParams();
-            data.append("grant_type", "authorization_code");
-            data.append("code", code);
-            data.append("redirect_uri", "http://localhost:4200");
-            data.append("client_id", "public-client");
-            data.append("client_secret", "secret");
-            console.log("data", data);
-            window.fetch("http://localhost:8080/oauth2/token", {
-                method: "post",
-                headers: {
-                    'content-type': 'application/x-www-form-urlencoded',
-                   //  "Authorization": "Basic cHVibGljLWNsaWVudDo="
-                },
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                body: data
-            }).then(result => {
-                result.body.getReader().read().then(data => {
-                    console.log(data);
-                })
-
-            })
-        }
-        const login = async () => {
+        const token = async () => {
             const data = new URLSearchParams();
             data.append("grant_type", "authorization_code");
             data.append("code", code);
@@ -70,21 +29,25 @@
             data.append("client_secret", "secret");
             const response = await axios.post("http://localhost:8080/oauth2/token", data);
             console.log(response.data.access_token)
+            document.getElementById("token").innerText = response.data.access_token;
         }
 
     </script>
 </head>
 
 <body onload="init()">
+    <div class="container">
+
     <h1>Test Spring Authserver</h1>
     <div>
-    <button onclick="authorize()">authorize</button>
+        <h2>Step 1 - authorize at authentication server</h2>
+        <button type="button" class="btn btn-primary" onclick="authorize()">authorize</button>
     </div>
     <div>
-        <button onclick="redirect()">redirect</button>
+        <h2>Step 2 - get token from token endpoint</h2>
+        <button type="button" class="btn btn-primary" onclick="token()">token</button>
+        <div><span id="token"></span></div>
     </div>
-    <div>
-        <button onclick="login()">login</button>
     </div>
 </body>
 

@@ -10,12 +10,11 @@
 
 ### Requirements
 * Node.js runtime
-* globally installed http-server (npm install -g http-server)
 
 ### Start Web Application
 
     cd ./src/main/web
-    http-server -p 4200
+    npx http-server -p 4200
 
 ### Login
 
